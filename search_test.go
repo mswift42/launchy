@@ -16,3 +16,9 @@ func TestSearchresultNames(t *testing.T) {
 	s1 := SearchresultNames(SampleSearchResults)
 	assert.Equal(s1[0], "gobook")
 }
+
+func TestLocateCommand(t *testing.T) {
+	assert := assert.New(t)
+	l1 := locateCommand("go")
+	assert.Equal(l1.Path, "/usr/bin/locate")
+}

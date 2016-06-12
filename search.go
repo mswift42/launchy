@@ -1,6 +1,9 @@
 package main
 
-import "os/exec"
+import (
+	"os/exec"
+	"os/user"
+)
 
 // Searchresult represents the result of a local search.
 type Searchresult struct {
@@ -31,6 +34,22 @@ func SearchresultNames(sr []Searchresult) []string {
 // matching only the 'base name', searching for the query value.
 func locateCommand(query string) *exec.Cmd {
 	return exec.Command("locate", "-l", "20", "-b", "-i", query)
+}
+func findCommandBookmarks(loc, value string) (*exec.Cmd, error) {
+	usr, err := user.Current()
+	if err != nil {
+		return nil, err
+	}
+	if loc == "" {
+		return exec.Command("find", usr.HomeDir+loc, "-maxdepth", "1",
+			"-iname", "*"+value+"*"), nil
+	}
+	return exec.Command("find", usr.HomeDir+loc, "-maxdepth", "2",
+		"-iname", "*"+value+"*"), nil
+}
+
+func findCommandBinries(loc, value string) *exec.Cmd {
+	return exec.Command(loc, "-maxdepth", "2", "-iname", "*"+value+"*")
 }
 func main() {
 

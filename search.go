@@ -49,7 +49,7 @@ func findCommandBookmarks(loc, value string) (*exec.Cmd, error) {
 }
 
 func findCommandBinries(loc, value string) *exec.Cmd {
-	return exec.Command(loc, "-maxdepth", "2", "-iname", "*"+value+"*")
+	return exec.Command("find", loc, "-maxdepth", "2", "-iname", "*"+value+"*")
 }
 func main() {
 

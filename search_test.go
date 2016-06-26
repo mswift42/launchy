@@ -45,3 +45,10 @@ func TestFindCommandBinaries(t *testing.T) {
 	assert.Equal(f1.Args[1:], []string{"/opt", "-maxdepth", "2", "-iname", "*go*"})
 	assert.Equal(f1.Env, []string(nil))
 }
+
+func TestGetMimeType(t *testing.T) {
+	assert := assert.New(t)
+	m1, err := getMimeType("/home/martin/Documents/ModernC.pdf")
+	assert.Equal(err, nil)
+	assert.Equal(m1, "application/pdf\n")
+}

@@ -30,3 +30,11 @@ func setup_grid(orientation gtk.Orientation) *gtk.Grid {
 	grid.SetOrientation(orientation)
 	return grid
 }
+
+func setup_scrolledWindow(hadjust, vadjust *gtk.Adjustment) *gtk.ScrolledWindow {
+	scrollwin, err := gtk.ScrolledWindowNew(hadjust, vadjust)
+	if err != nil {
+		log.Fatal("unable to setup scrolled window: ", err)
+	}
+	return scrollwin
+}

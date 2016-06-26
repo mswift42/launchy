@@ -13,3 +13,11 @@ func setup_textentry() *gtk.Entry {
 	}
 	return te
 }
+
+func setup_box(orientation gtk.Orientation) *gtk.Box {
+	box, err := gtk.BoxNew(or, 2)
+	if err != nil {
+		log.Fatal("unable to create new box: ", err)
+	}
+	return box
+}

@@ -1,8 +1,15 @@
 package main
 
 import (
+	"bufio"
+	"bytes"
+	"fmt"
 	"os/exec"
 	"os/user"
+	"path"
+	"strings"
+
+	"github.com/codeskyblue/go-sh"
 )
 
 // Searchresult represents the result of a local search.
@@ -51,6 +58,41 @@ func findCommandBookmarks(loc, value string) (*exec.Cmd, error) {
 func findCommandBinries(loc, value string) *exec.Cmd {
 	return exec.Command("find", loc, "-maxdepth", "2", "-iname", "*"+value+"*")
 }
+
+func getMimeType(file string) (string, error) {
+	mime, err := sh.Command("file", "--mime-type", "--b", file).Output()
+	if err != nil {
+		return "", err
+	}
+	return string(mime), nil
+}
+func query(result string) *Searchresult {
+	var sr Searchresult
+	res := strings.Trim(result, " ")
+	sr.name = path.Base(res)
+	sr.fullpath = res
+	return &sr
+}
 func main() {
+	cmd := locateCommand("pro")
+	out, err := sh.Command(cmd.Path, cmd.Args[1:]).Output()
+	if err != nil {
+		panic(nil)
+	}
+	scanner := bufio.NewScanner(bytes.NewReader(out))
+	for scanner.Scan() {
+		fmt.Println(scanner.Text())
+	}
+	fnd, _ := findCommandBookmarks("/Documents", "pro")
+	fndout, err := sh.Command(fnd.Path, fnd.Args[1:]).Output()
+	if err != nil {
+		panic(nil)
+	}
+	sc2 := bufio.NewScanner(bytes.NewReader(fndout))
+	for sc2.Scan() {
+		fmt.Println(sc2.Text())
+	}
+	ma, _ := getMimeType("/home/martin/Documents/ModernC.pdf")
+	fmt.Println(ma)
 
 }

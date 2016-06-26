@@ -38,3 +38,11 @@ func setup_scrolledWindow(hadjust, vadjust *gtk.Adjustment) *gtk.ScrolledWindow 
 	}
 	return scrollwin
 }
+
+func setup_label(text string) *gtk.Label {
+	label, err := gtk.LabelNew(text)
+	if err != nil {
+		log.Fatal("unable to setup label")
+	}
+	return label
+}

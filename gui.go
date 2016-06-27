@@ -6,7 +6,7 @@ import (
 	"github.com/gotk3/gotk3/gtk"
 )
 
-func setup_textentry() *gtk.Entry {
+func setupTextentry() *gtk.Entry {
 	te, err := gtk.EntryNew()
 	if err != nil {
 		log.Fatal("Unable to create new entry: ", err)
@@ -14,7 +14,7 @@ func setup_textentry() *gtk.Entry {
 	return te
 }
 
-func setup_box(orientation gtk.Orientation) *gtk.Box {
+func setupBox(orientation gtk.Orientation) *gtk.Box {
 	box, err := gtk.BoxNew(orientation, 2)
 	if err != nil {
 		log.Fatal("unable to create new box: ", err)
@@ -22,7 +22,7 @@ func setup_box(orientation gtk.Orientation) *gtk.Box {
 	return box
 }
 
-func setup_grid(orientation gtk.Orientation) *gtk.Grid {
+func setupGrid(orientation gtk.Orientation) *gtk.Grid {
 	grid, err := gtk.GridNew()
 	if err != nil {
 		log.Fatal("Unable to setup grid: ", err)
@@ -31,7 +31,7 @@ func setup_grid(orientation gtk.Orientation) *gtk.Grid {
 	return grid
 }
 
-func setup_scrolledWindow(hadjust, vadjust *gtk.Adjustment) *gtk.ScrolledWindow {
+func setupScrolledWindow(hadjust, vadjust *gtk.Adjustment) *gtk.ScrolledWindow {
 	scrollwin, err := gtk.ScrolledWindowNew(hadjust, vadjust)
 	if err != nil {
 		log.Fatal("unable to setup scrolled window: ", err)
@@ -39,7 +39,7 @@ func setup_scrolledWindow(hadjust, vadjust *gtk.Adjustment) *gtk.ScrolledWindow 
 	return scrollwin
 }
 
-func setup_label(text string) *gtk.Label {
+func setupLabel(text string) *gtk.Label {
 	label, err := gtk.LabelNew(text)
 	if err != nil {
 		log.Fatal("unable to setup label: ", err)
@@ -47,10 +47,26 @@ func setup_label(text string) *gtk.Label {
 	return label
 }
 
-func setup_buttonWithLabel(text string) *gtk.Button {
+func setupButtonWithLabel(text string) *gtk.Button {
 	btn, err := gtk.ButtonNewWithLabel(text)
 	if err != nil {
 		log.Fatal("unable to setup button: ", err)
 	}
 	return btn
+}
+
+func launchyWindow() *gtk.Window {
+	win, err := gtk.WindowNew(gtk.WINDOW_TOPLEVEL)
+	win.SetTitle("Launchy")
+	win.Connect("destroy", func() {
+		gtk.MainQuit()
+	})
+	if err != nil {
+		log.Fatal("couldn't create window: ", err)
+	}
+	box := setupBox(gtk.ORIENTATION_HORIZONTAL)
+	win.Add(box)
+	entry := setupTextentry()
+	box.PackStart(entry, true, false, 4)
+	return win
 }

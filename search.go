@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bufio"
+	"bytes"
 	"os/exec"
 	"os/user"
 	"path"
@@ -25,7 +27,7 @@ var bookmarks = Bookmarks{"", "/Documents", "/.Downloads",
 
 // SearchresultNames takes a slice of Searchresults and
 // returns of slice of its names.
-func SearchresultNames(sr []Searchresult) []string {
+func SearchresultNames(sr []*Searchresult) []string {
 	results := make([]string, len(sr))
 	for i := range sr {
 		results[i] = sr[i].name
@@ -56,6 +58,24 @@ func findCommandBinries(loc, value string) *exec.Cmd {
 	return exec.Command("find", loc, "-maxdepth", "2", "-iname", "*"+value+"*")
 }
 
+func scanner(out []byte) *bufio.Scanner {
+	return bufio.NewScanner(bytes.NewReader(out))
+}
+
+func locateOutput(query string) ([]*Searchresult, error) {
+	var res []*Searchresult
+	cmd := locateCommand(query)
+	output, err := sh.Command(cmd.Path, cmd.Args[1:]).Output()
+	if err != nil {
+		return nil, err
+	}
+	scanner := scanner(output)
+	for scanner.Scan() {
+		res = append(res, newSearchresult(scanner.Text()))
+	}
+	return res, nil
+}
+
 func getMimeType(file string) (string, error) {
 	mime, err := sh.Command("file", "--mime-type", "--b", file).Output()
 	if err != nil {
@@ -63,7 +83,7 @@ func getMimeType(file string) (string, error) {
 	}
 	return string(mime), nil
 }
-func query(result string) *Searchresult {
+func newSearchresult(result string) *Searchresult {
 	var sr Searchresult
 	res := strings.Trim(result, " ")
 	sr.name = path.Base(res)

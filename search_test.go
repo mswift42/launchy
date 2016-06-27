@@ -52,3 +52,10 @@ func TestGetMimeType(t *testing.T) {
 	assert.Equal(err, nil)
 	assert.Equal(m1, "application/pdf\n")
 }
+
+func TestQuery(t *testing.T) {
+	assert := assert.New(t)
+	q := query("/home/martin/Documents/ModernC.pdf")
+	assert.Equal(q.name, "ModernC.pdf")
+	assert.Equal(q.fullpath, "/home/martin/Documents/ModernC.pdf")
+}

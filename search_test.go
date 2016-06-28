@@ -12,7 +12,7 @@ var SampleSearchResults = []string{
 	"/Documents/Dive_into_Python3.pdf",
 }
 
-func TestSearchresultNames(t *testing.T) {
+func TestNewSearchResult(t *testing.T) {
 	assert := assert.New(t)
 	s1 := newSearchresult(SampleSearchResults[0])
 	assert.Equal(s1.name, "GoBook.pdf")
@@ -20,6 +20,17 @@ func TestSearchresultNames(t *testing.T) {
 	s2 := newSearchresult(SampleSearchResults[1])
 	assert.Equal(s2.name, "Dive_into_Python3.pdf")
 	assert.Equal(s2.fullpath, SampleSearchResults[1])
+}
+
+func TestSearchResultNames(t *testing.T) {
+	assert := assert.New(t)
+	var sr []*Searchresult
+	sr = append(sr, newSearchresult(SampleSearchResults[0]))
+	sr = append(sr, newSearchresult(SampleSearchResults[1]))
+	names := SearchresultNames(sr)
+	assert.Equal(len(names), 2)
+	assert.Equal(names[0], "GoBook.pdf")
+	assert.Equal(names[1], "Dive_into_Python3.pdf")
 }
 
 func TestLocateCommand(t *testing.T) {

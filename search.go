@@ -84,11 +84,13 @@ func findBinariesOutput(query, location string) []*Searchresult {
 	return commandOutput(findCommandBinries(location, query))
 }
 
-// func findBinariesOutput(query, location string) []*Searchresult {
-// 	var res []*Searchresult
-// 	cmd := findCommandBinries(location, query)
-// 	output, err := sh.Command(cmd.Path, cmd.Args[1:]).Output()
-// }
+func findBookmarksOutput(query, location string) []*Searchresult {
+	cmd, err := findCommandBookmarks(location, query)
+	if err != nil {
+		log.Fatal("error finding current user: ", err)
+	}
+	return commandOutput(cmd)
+}
 
 func getMimeType(file string) (string, error) {
 	mime, err := sh.Command("file", "--mime-type", "--b", file).Output()

@@ -7,15 +7,19 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var SampleSearchResults = []Searchresult{
-	Searchresult{"gobook", "/Documents/GoBook.pdf", "pdf.png"},
-	Searchresult{"Dive_into_Python3", "/Documents/Dive_into_Python3.pdf", "pdf.png"},
+var SampleSearchResults = []string{
+	"/Documents/GoBook.pdf",
+	"/Documents/Dive_into_Python3.pdf",
 }
 
 func TestSearchresultNames(t *testing.T) {
 	assert := assert.New(t)
-	s1 := SearchresultNames(SampleSearchResults)
-	assert.Equal(s1[0], "gobook")
+	s1 := newSearchresult(SampleSearchResults[0])
+	assert.Equal(s1.name, "GoBook.pdf")
+	assert.Equal(s1.fullpath, SampleSearchResults[0])
+	s2 := newSearchresult(SampleSearchResults[1])
+	assert.Equal(s2.name, "Dive_into_Python3.pdf")
+	assert.Equal(s2.fullpath, SampleSearchResults[1])
 }
 
 func TestLocateCommand(t *testing.T) {
@@ -53,9 +57,23 @@ func TestGetMimeType(t *testing.T) {
 	assert.Equal(m1, "application/pdf\n")
 }
 
-func TestQuery(t *testing.T) {
+func TestNewSearchresult(t *testing.T) {
 	assert := assert.New(t)
-	q := query("/home/martin/Documents/ModernC.pdf")
+	l1 := "/home/martin/Documents/ModernC.pdf"
+	l2 := "/home/martin/Documents/Go in Action.pdf"
+	q := newSearchresult(l1)
 	assert.Equal(q.name, "ModernC.pdf")
-	assert.Equal(q.fullpath, "/home/martin/Documents/ModernC.pdf")
+	assert.Equal(q.fullpath, l1)
+	q2 := newSearchresult(l2)
+	assert.Equal(q2.name, "Go in Action.pdf")
+	assert.Equal(q2.fullpath, l2)
+}
+
+func TestScanner(t *testing.T) {
+	assert := assert.New(t)
+	b := []byte("some text")
+	scanner := scanner(b)
+	for scanner.Scan() {
+		assert.Equal(scanner.Text(), "some text")
+	}
 }

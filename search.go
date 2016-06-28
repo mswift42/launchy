@@ -23,8 +23,14 @@ type Searchresult struct {
 // Videos, Documents, Pictures, Downloads, ...
 type Bookmarks []string
 
+// Binaries represents a 'bin' folder of a linux desktop, e.g.
+// usr/bin/, /usr/local/bin, /opt/bin, ...
+type Binaries []string
+
 var bookmarks = Bookmarks{"", "/Documents", "/.Downloads",
 	"/Music", "Pictures", "/Videos"}
+
+var binaries = Binaries{"/usr/bin", "/usr/local/bin", "/opt/"}
 
 // SearchresultNames takes a slice of Searchresults and
 // returns of slice of its names.

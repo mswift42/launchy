@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"log"
 	"os/exec"
 	"os/user"
 	"path"
@@ -62,18 +63,37 @@ func scanner(out []byte) *bufio.Scanner {
 	return bufio.NewScanner(bytes.NewReader(out))
 }
 
-func locateOutput(query string) ([]*Searchresult, error) {
+func locateOutput(query string) []*Searchresult {
 	var res []*Searchresult
 	cmd := locateCommand(query)
 	output, err := sh.Command(cmd.Path, cmd.Args[1:]).Output()
 	if err != nil {
-		return nil, err
+		log.Fatal("locate command fails with error: ", err)
 	}
 	scanner := scanner(output)
 	for scanner.Scan() {
 		res = append(res, newSearchresult(scanner.Text()))
 	}
-	return res, nil
+	return res
+}
+
+func commandOutput(query, location string, cmd *exec.Cmd) []*Searchresult {
+	var res []*Searchresult
+	output, err := sh.Command(cmd.Path, cmd.Args[1:]).Output()
+	if err != nil {
+		log.Fatal("search command failed with error: ", err)
+	}
+	scanner := scanner(output)
+	for scanner.Scan() {
+		res = append(res, newSearchresult(scanner.Text()))
+	}
+	return res
+}
+
+func findBinariesOutput(query, location string) []*Searchresult {
+	var res []*Searchresult
+	cmd := findCommandBinries(location, query)
+	output, err := sh.Command(cmd.Path, cmd.Args[1:]).Output()
 }
 
 func getMimeType(file string) (string, error) {

@@ -27,8 +27,8 @@ type Bookmarks []string
 // usr/bin/, /usr/local/bin, /opt/bin, ...
 type Binaries []string
 
-var bookmarks = Bookmarks{"", "/Documents", "/.Downloads",
-	"/Music", "Pictures", "/Videos"}
+var bookmarks = Bookmarks{"", "/Documents", "/Downloads", "/Desktop",
+	"/Music", "/Pictures", "/Templates", "/Videos"}
 
 var binaries = Binaries{"/usr/bin", "/usr/local/bin", "/opt/"}
 

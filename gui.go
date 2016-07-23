@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/gotk3/gotk3/gtk"
@@ -55,6 +56,10 @@ func setupButtonWithLabel(text string) *gtk.Button {
 	return btn
 }
 
+func populateResults(input string) {
+	fmt.Println(SearchresultNames(locateOutput(input)))
+}
+
 func launchyWindow() *gtk.Window {
 	win, err := gtk.WindowNew(gtk.WINDOW_TOPLEVEL)
 	win.SetTitle("Launchy")
@@ -64,9 +69,19 @@ func launchyWindow() *gtk.Window {
 	if err != nil {
 		log.Fatal("couldn't create window: ", err)
 	}
-	box := setupBox(gtk.ORIENTATION_HORIZONTAL)
-	win.Add(box)
+	hbox := setupBox(gtk.ORIENTATION_HORIZONTAL)
+	win.Add(hbox)
 	entry := setupTextentry()
-	box.PackStart(entry, true, false, 4)
+	hbox.PackStart(entry, true, false, 4)
+	labelsGrid := setupGrid(gtk.ORIENTATION_VERTICAL)
+	labelsGrid.SetHExpand(true)
+	hbox.Add(labelsGrid)
+	entry.Connect("activate", func() {
+		text, err := entry.GetText()
+		if err != nil {
+			fmt.Println(err)
+		}
+		populateResults(text)
+	})
 	return win
 }

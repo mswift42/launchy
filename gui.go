@@ -1,6 +1,7 @@
 package main
 
 import (
+	"container/list"
 	"fmt"
 	"log"
 
@@ -56,8 +57,20 @@ func setupButtonWithLabel(text string) *gtk.Button {
 	return btn
 }
 
-func populateResults(input string) {
-	fmt.Println(SearchresultNames(locateOutput(input)))
+func addRemoveWindow() *gtk.Window {
+	win, err := gtk.WindowNew(gtk.WINDOW_TOPLEVEL)
+	if err != nil {
+		log.Fatal("unable to setup window: ", err)
+	}
+	grid := setupGrid(gtk.ORIENTATION_VERTICAL)
+	win.Add(grid)
+	sw := setupScrolledWindow(nil, nil)
+	grid.Attach(sw, 0, 0, 2, 1)
+	sw.SetHExpand(true)
+	sw.SetVExpand(true)
+	labelsGrid := setupGrid(gtk.ORIENTATION_VERTICAL)
+	labelsGrid.SetHExpand(true)
+	return win
 }
 
 func launchyWindow() *gtk.Window {
@@ -69,19 +82,33 @@ func launchyWindow() *gtk.Window {
 	if err != nil {
 		log.Fatal("couldn't create window: ", err)
 	}
-	hbox := setupBox(gtk.ORIENTATION_HORIZONTAL)
-	win.Add(hbox)
+	grid := setupGrid(gtk.ORIENTATION_VERTICAL)
+	win.Add(grid)
 	entry := setupTextentry()
-	hbox.PackStart(entry, true, false, 4)
+	grid.Add(entry)
+	sw := setupScrolledWindow(nil, nil)
+	sw.SetHExpand(true)
+	sw.SetVExpand(true)
+	grid.Add(sw)
 	labelsGrid := setupGrid(gtk.ORIENTATION_VERTICAL)
 	labelsGrid.SetHExpand(true)
-	hbox.Add(labelsGrid)
+	sw.Add(labelsGrid)
+	var labellist = list.New()
 	entry.Connect("activate", func() {
 		text, err := entry.GetText()
 		if err != nil {
 			fmt.Println(err)
 		}
-		populateResults(text)
+		resultnames := SearchresultNames(locateOutput(text))
+		for _, j := range resultnames {
+			label := setupLabel(j)
+			label.SetHExpand(true)
+			labellist.PushBack(label)
+			labelsGrid.Add(label)
+			labelsGrid.ShowAll()
+		}
+		labelsGrid.ShowAll()
+
 	})
 	return win
 }
